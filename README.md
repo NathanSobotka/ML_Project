@@ -9,7 +9,12 @@ A machine learning project that classifies breast tissue histopathology images a
 - Benign: 2,480 images
 - Malignant: 5,429 images
 
-The dataset is not included in this repo. Download it and place it so the folder structure looks like this:
+The dataset is not included in this repo. Get it from the official source, the Laboratory of Vision, Robotics and Imaging (UFPR):
+
+- Dataset page: https://web.inf.ufpr.br/vri/databases/breast-cancer-histopathological-database-breakhis/
+- Direct download: http://www.inf.ufpr.br/vri/databases/BreaKHis_v1.tar.gz
+
+Extract the archive and place it so the folder structure looks like this:
 
 ```
 project folder/
@@ -24,6 +29,10 @@ project folder/
 ```
 
 If your data lives somewhere else, change the `DATA_ROOT` line near the top of the script.
+
+BreaKHis may be used for non commercial research if you cite the original paper:
+
+> Spanhol, F., Oliveira, L. S., Petitjean, C., Heutte, L. "A Dataset for Breast Cancer Histopathological Image Classification." IEEE Transactions on Biomedical Engineering (TBME), 63(7):1455-1462, 2016.
 
 ## Pipeline
 
