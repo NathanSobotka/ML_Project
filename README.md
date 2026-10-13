@@ -14,21 +14,15 @@ The dataset is not included in this repo. Get it from the official source, the L
 - Dataset page: https://web.inf.ufpr.br/vri/databases/breast-cancer-histopathological-database-breakhis/
 - Direct download: http://www.inf.ufpr.br/vri/databases/BreaKHis_v1.tar.gz
 
-Extract the archive and place it so the folder structure looks like this:
+This repo only contains the script and this README, so the data lives wherever you download it. Extract the archive anywhere you like. The script needs the path to the `histology_slides/breast` folder inside it, which contains the `benign` and `malignant` subfolders:
 
 ```
-project folder/
-    breast_cancer_mlp.py
-    BreakHisData/
-        BreaKHis_v1/
-            BreaKHis_v1/
-                histology_slides/
-                    breast/
-                        benign/
-                        malignant/
+BreaKHis_v1/
+    histology_slides/
+        breast/
+            benign/
+            malignant/
 ```
-
-If your data lives somewhere else, change the `DATA_ROOT` line near the top of the script.
 
 BreaKHis may be used for non commercial research if you cite the original paper:
 
@@ -55,6 +49,46 @@ BreaKHis may be used for non commercial research if you cite the original paper:
 
 Each model is scored on accuracy, precision, recall, and F1. Recall on the malignant class matters most here, since a missed cancer (false negative) is the worst error. The script also produces confusion matrices and ROC curves with AUC for all three models.
 
+## Results
+
+All three models were evaluated on the same held out test set (2,172 images, 1,086 benign and 1,086 malignant). Precision and recall are for the malignant class.
+
+| Model | Accuracy | Precision | Recall | F1 Score | AUC |
+|---|---|---|---|---|---|
+| MLP (256, 128) | 82.46% | 86.60% | 76.80% | 0.8141 | 0.901 |
+| Logistic Regression | 77.30% | 86.38% | 64.83% | 0.7407 | 0.739 |
+| Random Forest | 88.72% | 87.78% | 89.96% | 0.8886 | 0.948 |
+
+Random Forest was the best model overall. It had the highest accuracy, recall, F1, and AUC, and it missed the fewest cancer cases (109 of 1,086). The MLP came in second, and Logistic Regression was the weakest, missing 382 of 1,086 malignant cases (over a third).
+
+The MLP's early stopping kicked in at iteration 34 out of a possible 200, with a best validation score of 0.8251.
+
+### Class distribution
+
+The dataset is imbalanced (about 31% benign and 69% malignant), which is why the benign class gets oversampled before training.
+
+![Class distribution](figures/class_distribution.png)
+
+### Sample images
+
+![Sample histopathology images](figures/sample_images.png)
+
+### MLP learning curves
+
+Training loss and validation accuracy across training iterations.
+
+![MLP learning curves](figures/mlp_learning_curve.png)
+
+### Confusion matrices
+
+Counts on the test set. The bottom left cell of each matrix is the most dangerous error (malignant predicted as benign): 252 for the MLP, 382 for Logistic Regression, and 109 for Random Forest.
+
+![Confusion matrices](figures/confusion_matrices.png)
+
+### ROC curves
+
+![ROC curves](figures/roc_curves.png)
+
 ## Requirements
 
 - Python 3.8 or newer
@@ -72,9 +106,14 @@ pip install numpy pandas matplotlib pillow scikit-learn
 
 ## Usage
 
+1. Download and extract the dataset using the link above.
+2. Run the script and pass the path to the `histology_slides/breast` folder:
+
 ```
-python breast_cancer_mlp.py
+python breast_cancer_mlp.py /path/to/BreaKHis_v1/histology_slides/breast
 ```
+
+If you leave the path off, the script looks for `BreaKHis_v1/histology_slides/breast` in the folder you run it from.
 
 The MLP can take a few minutes to train. Plots open in windows during the run (close each one to continue) and are also saved to a `figures/` folder:
 
